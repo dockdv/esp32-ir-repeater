@@ -54,7 +54,7 @@ Install Arduino-IRremote from **Arduino IDE → Library Manager**.
 
 ## Wiring
 
-![Diagram](https://github.com/dockdv/esp32-ir-control/blob/main/docs/images/Connections.png)
+![Diagram](https://github.com/dockdv/esp32-ir-repeater/blob/main/docs/images/IR%20Repeater.png)
 
 Tested wiring:
 - **KY-005 (IR transmitter)**: signal → `IR_SEND_PIN` (default `GPIO2`), VCC/GND per module specs
