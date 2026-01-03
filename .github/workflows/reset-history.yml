@@ -1,0 +1,44 @@
+name: Reset git history (manual)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  reset:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Reset default branch history to a single commit
+        env:
+          DEFAULT_BRANCH: main   # change if your default branch is master, etc.
+        run: |
+          set -euo pipefail
+
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Start from the default branch content
+          git checkout "$DEFAULT_BRANCH"
+
+          # Create an orphan commit (no parents => wipes history)
+          git checkout --orphan clean-slate
+          git add -A
+          git commit -m "Initial commit (history reset) $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+
+          # Force-push this single commit to replace the default branch history
+          git push -f origin HEAD:"$DEFAULT_BRANCH"
+
+      # OPTIONAL: delete all tags (tags usually reference old history)
+      - name: Delete all tags on origin (optional)
+        if: false
+        run: |
+          set -euo pipefail
+          git fetch --tags
+          git tag -l | xargs -r -n 1 git push --delete origin
